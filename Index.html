@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ZX To Up Shop — Free Fire & Game Topup</title>
+<style>
+  :root{
+    --primary:#ff6b00;
+    --dark:#0f1724;
+    --muted:#6b7280;
+    --card:#ffffff;
+    --glass: rgba(255,255,255,0.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial;
+    background: linear-gradient(180deg,#0f1724 0%, #071024 100%);
+    color: #e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1100px;margin:24px auto;padding:16px;}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(45deg,var(--primary),#ffb86b);display:flex;align-items:center;justify-content:center;font-weight:700;color:#081022}
+  h1{margin:0;font-size:20px}
+  .lang-toggle{background:transparent;border:1px solid rgba(255,255,255,0.08);padding:8px;border-radius:8px;color:#e6eef8;cursor:pointer}
+  .main {display:grid;grid-template-columns:1fr;gap:16px}
+  
+  /* Categories */
+  .categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .category-tab {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .category-tab:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  .category-tab.active {
+    background: linear-gradient(90deg,var(--primary),#ffb86b);
+    color: #081022;
+    font-weight: 700;
+  }
+  .category-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  
+  /* Products */
+  .products-container {
+    display: none;
+    background:rgba(255,255,255,0.02);
+    padding:14px;
+    border-radius:12px;
+  }
+  .products-container.active {
+    display: block;
+  }
+  .products-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:12px;
+  }
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:12px;
+    border-radius:10px
+  }
+  .card h3{margin:0 0 6px 0;font-size:15px}
+  .price{font-weight:700;margin-top:8px}
+  .btn{display:inline-block;padding:8px 10px;border-radius:8px;border:0;background:var(--primary);color:#081022;cursor:pointer}
+  .muted{color:var(--muted);font-size:13px}
+  
+  /* right panel */
+  .right-panel{background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;position:sticky;top:22px;height:fit-content}
+  .balance{font-size:14px;margin-bottom:8px}
+  .cart-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  .small{font-size:13px}
+  .total{font-weight:800;font-size:18px;margin-top:10px}
+  .payments{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .payment{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);min-width:100px;text-align:center}
+  .rules{margin-top:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);font-size:13px}
+  footer{margin-top:18px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);text-align:center;font-size:13px;color:var(--muted)}
+  
+  /* modal */
+  .modal-back{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;display:none}
+  .modal{background:var(--card);color:#081022;padding:18px;border-radius:12px;width:420px;max-width:94%}
+  .modal h3{margin-top:0}
+  .close{float:right;background:transparent;border:0;cursor:pointer;font-size:18px}
+  .badge{display:inline-block;padding:4px 8px;border-radius:8px;background:rgba(0,0,0,0.06);font-size:12px}
+  .note{font-size:13px;color:var(--muted)}
+  
+  /* Login Modal */
+  .login-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--dark);
+    padding: 30px;
+    border-radius: 12px;
+    z-index: 1001;
+    width: 90%;
+    max-width: 400px;
+    display: none;
+  }
+  .login-modal.active {
+    display: block;
+  }
+  .login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .login-title {
+    margin: 0;
+    font-size: 20px;
+  }
+  .close-login {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .login-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .google-login {
+    background: #4285F4;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  /* Add Wallet Modal */
+  .wallet-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--dark);
+    padding: 30px;
+    border-radius: 12px;
+    z-index: 1001;
+    width: 90%;
+    max-width: 400px;
+    display: none;
+  }
+  .wallet-modal.active {
+    display: block;
+  }
+  .wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .wallet-title {
+    margin: 0;
+    font-size: 20px;
+  }
+  .close-wallet {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .wallet-amount {
+    margin: 15px 0;
+  }
+  .wallet-amount input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: white;
+  }
+  .wallet-payment {
+    margin-top: 20px;
+  }
+  .wallet-payment h4 {
+    margin-bottom: 10px;
+  }
+  .wallet-payment-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .wallet-payment-option {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+  }
+  .wallet-payment-option.active {
+    border-color: var(--primary);
+  }
+  .add-wallet-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #081022;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+  }
+  .overlay.active {
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">ZX</div>
+        <div>
+          <h1>ZX To Up Shop <span class="muted">— Free Fire & Game Topup</span></h1>
+          <div class="muted small">Instant Delivery • 24/7 Support • Best Prices</div>
+        </div>
+      </div>
+      <div>
+        <button id="loginBtn" class="lang-toggle">Login / Register</button>
+        <button id="langBtn" class="lang-toggle">বাংলা / EN</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <!-- Categories -->
+      <div class="categories-container" id="categories"></div>
+      
+      <!-- Products will be shown here when category is selected -->
+      <div id="productsContainer" class="products-container"></div>
+
+      <!-- right panel -->
+      <aside class="right-panel">
+        <div>
+          <div class="balance">💰 <strong>Account Balance</strong></div>
+          <div style="font-size:18px; font-weight:800">৳ <span id="balanceRight">0</span></div>
+          <button id="addWalletBtn" style="background:transparent;border:none;color:var(--primary);cursor:pointer;padding:0;font-size:13px">+ Add Wallet Balance</button>
+        </div>
+        <hr style="border:none;border-top:1px dashed rgba(255,255,255,0.03);margin:10px 0" />
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>Cart</strong></div>
+            <div class="muted small" id="cartCount">0 items</div>
+          </div>
+          <div id="cartList" style="margin-top:8px;max-height:260px;overflow:auto"></div>
+          <div class="total">Total: ৳ <span id="cartTotal">0</span></div>
+          <div style="margin-top:8px">
+            <button id="buyNow" class="btn" style="width:100%;margin-bottom:8px">BUY NOW 💸</button>
+            <button id="addCartAll" class="btn" style="width:100%;background:#4b5563;color:#fff">Add All to Cart 🛒</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="muted small">Payment Methods / পেমেন্ট পদ্ধতি</div>
+          <div class="payments">
+            <div class="payment">Bikash</div>
+            <div class="payment">Nogod</div>
+            <div class="payment">Rocket</div>
+            <div class="payment">Wallet Pay</div>
+          </div>
+        </div>
+
+        <div class="rules">
+          <strong>Rules & Conditions / নিয়মাবলি</strong>
+          <ul style="padding-left:16px;margin:8px 0 0 0">
+            <li>শুধুমাত্র Bangladesh সার্ভারে ID Code দিয়ে টপ আপ হবে।</li>
+            <li>Player ID ভুল দিলে ZX To Up Shop দায়ী নয়।</li>
+            <li>ডেলিভারি না হলে WhatsApp Support-এ যোগাযোগ করুন।</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>STAY CONNECTED — ZX To Up Shop • Dhaka, Bangladesh</div>
+      <div style="margin-top:6px;color:var(--muted)">© 2025 ZX To Up Shop. All Rights Reserved.</div>
+    </footer>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="overlay" id="overlay"></div>
+  <div class="login-modal" id="loginModal">
+    <div class="login-header">
+      <h3 class="login-title">Login to ZX Shop</h3>
+      <button class="close-login" id="closeLogin">✖</button>
+    </div>
+    <div class="login-options">
+      <button class="google-login" id="googleLoginBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.88 16.79 15.71 17.57V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4"/>
+          <path d="M12 23C14.97 23 17.46 22.02 19.28 20.34L15.71 17.57C14.73 18.23 13.48 18.63 12 18.63C9.14 18.63 6.72 16.7 5.84 14.1H2.18V16.94C4 20.53 7.7 23 12 23Z" fill="#34A853"/>
+          <path d="M5.84 14.09C5.62 13.43 5.49 12.73 5.49 12C5.49 11.27 5.62 10.57 5.84 9.91V7.07H2.18C1.43 8.55 1 10.22 1 12C1 13.78 1.43 15.45 2.18 16.93L5.84 14.09Z" fill="#FBBC05"/>
+          <path d="M12 5.38C13.62 5.38 15.06 5.94 16.21 7.02L19.36 3.87C17.45 2.09 14.97 1 12 1C7.7 1 4 3.47 2.18 7.07L5.84 9.91C6.72 7.31 9.14 5.38 12 5.38Z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+      <div style="text-align:center;margin-top:15px;color:var(--muted);font-size:14px">
+        Demo Login: Click any button to proceed
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Wallet Modal -->
+  <div class="wallet-modal" id="walletModal">
+    <div class="wallet-header">
+      <h3 class="wallet-title">Add Wallet Balance</h3>
+      <button class="close-wallet" id="closeWallet">✖</button>
+    </div>
+    <div class="wallet-amount">
+      <input type="number" id="walletAmount" placeholder="Enter amount (৳)">
+    </div>
+    <div class="wallet-payment">
+      <h4>Select Payment Method</h4>
+      <div class="wallet-payment-options">
+        <div class="wallet-payment-option active" data-method="bikash">Bikash</div>
+        <div class="wallet-payment-option" data-method="nogod">Nogod</div>
+        <div class="wallet-payment-option" data-method="rocket">Rocket</div>
+        <div class="wallet-payment-option" data-method="bank">Bank Transfer</div>
+      </div>
+    </div>
+    <button class="add-wallet-btn" id="addWalletSubmit">Proceed to Payment</button>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="productModal" class="modal-back" role="dialog" aria-hidden="true">
+    <div class="modal" role="document">
+      <button class="close" id="closeModal">✖</button>
+      <h3 id="modalTitle">Product</h3>
+      <div id="modalBody"></div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <input id="playerId" placeholder="Player ID (UID) / প্লেয়ার আইডি" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)" />
+        <button id="modalAdd" class="btn">Add to Cart</button>
+      </div>
+      <div style="margin-top:8px" class="note">Note: This is a demo. No real payment is processed.</div>
+    </div>
+  </div>
+
+<script>
+const state = {
+  lang: 'bn',
+  balance: 0,
+  categories: [
+    { 
+      id:'freefire_idn', 
+      name_bn:'Free Fire [Indonesia]', 
+      name_en:'Free Fire [Indonesia]',
+      icon: 'https://drive.google.com/uc?id=1ZHm3WfTH9-cMZM-Dwd11pKYeNT3vL-tE'
+    },
+    { 
+      id:'evo', 
+      name_bn:'Evo Access [BD]', 
+      name_en:'Evo Access [BD]',
+      icon: 'https://drive.google.com/uc?id=1Z-XYF5hcgEO5ljnZjXDnfwPSAMBX6iC5'
+    },
+    { 
+      id:'weekly_lite', 
+      name_bn:'Weekly Lite [BD]', 
+      name_en:'Weekly Lite [BD]',
+      icon: 'https://drive.google.com/uc?id=1Z0Kw-rPBYntEcgubYF9Ff8TUbnEbfsdw'
+    },
+    { 
+      id:'airdrop', 
+      name_bn:'Airdrop UID BD', 
+      name_en:'Airdrop UID BD',
+      icon: 'https://drive.google.com/uc?id=1Yz2EEafEp-xSDfcZrd0U2dyHcW15T3sm'
+    },
+    { 
+      id:'freefire_bd', 
+      name_bn:'UID Code Top up [BD]', 
+      name_en:'UID Code Top up [BD]',
+      icon: 'https://drive.google.com/uc?id=1ZIFtGKxnCIzGfaZeZH_-O8BWV6KPlRf3'
+    },
+    { 
+      id:'unipin', 
+      name_bn:'Unipin Voucher', 
+      name_en:'Unipin Voucher',
+      icon: 'https://drive.google.com/uc?id=1ZQyzOInM1BPDv_uR1gWaSz3raYY7qphV'
+    },
+    { 
+      id:'weekly_monthly', 
+      name_bn:'Weekly & Monthly', 
+      name_en:'Weekly & Monthly',
+      icon: 'https://drive.google.com/uc?id=1Z9eYg6zJC6-qPXc3ibHK7TNOW337kOjW'
+    }
+  ],
+  activeCat: null,
+  products: {
+    freefire_idn: [
+      "5 Diamond | 10৳",
+      "50 Diamond | 67৳",
+      "70 Diamond | 84৳",
+      "100 Diamond | 132৳",
+      "210 Diamond | 255৳",
+      "500 Diamond | 580৳"
+    ],
+    evo: [
+      "3 Days Evo Access | 120৳",
+      "7 Days Evo Access | 145৳",
+      "14 Days Evo Access | 290৳",
+      "21 Days Evo Access | 410৳"
+    ],
+    weekly_lite: [
+      "Weekly Lite | 35৳",
+      "Weekly Lite 2x | 70৳",
+      "Weekly Lite 3x | 100৳",
+      "5x Weekly Lite | 180৳"
+    ],
+    airdrop: [
+      "0.99$ Airdrop | 120৳",
+      "1.99$ Airdrop | 240৳",
+      "2.99$ Airdrop | 375৳",
+      "3.99$ Airdrop | 495৳"
+    ],
+    freefire_bd: [
+      "25 Diamond | 22৳",
+      "50 Diamond | 35৳",
+      "115 Diamond | 74৳",
+      "240 Diamond | 147৳",
+      "355 Diamond | 221৳",
+      "480 Diamond | 295৳"
+    ],
+    unipin: [
+      "20 UC | 21৳",
+      "36 UC | 34৳",
+      "80 UC | 74৳",
+      "160 UC | 147৳",
+      "405 UC | 371৳",
+      "800 UC | 730৳"
+    ],
+    weekly_monthly: [
+      "Weekly 1x | 139৳",
+      "Weekly 2x | 278৳",
+      "Weekly 3x | 417৳",
+      "Monthly | 680৳",
+      "Monthly 2x | 1390৳"
+    ]
+  },
+  cart: [],
+  user: null
+};
+
+// DOM elements
+const categoriesEl = document.getElementById('categories');
+const productsContainer = document.getElementById('productsContainer');
+const balanceRight = document.getElementById('balanceRight');
+const cartList = document.getElementById('cartList');
+const cartCount = document.getElementById('cartCount');
+const cartTotalEl = document.getElementById('cartTotal');
+const langBtn = document.getElementById('langBtn');
+const loginBtn = document.getElementById('loginBtn');
+const addWalletBtn = document.getElementById('addWalletBtn');
+
+const productModal = document.getElementById('productModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const closeModal = document.getElementById('closeModal');
+const modalAdd = document.getElementById('modalAdd');
+const playerIdInput = document.getElementById('playerId');
+
+const loginModal = document.getElementById('loginModal');
+const closeLogin = document.getElementById('closeLogin');
+const googleLoginBtn = document.getElementById('googleLoginBtn');
+const overlay = document.getElementById('overlay');
+
+const walletModal = document.getElementById('walletModal');
+const closeWallet = document.getElementById('closeWallet');
+const walletAmount = document.getElementById('walletAmount');
+const addWalletSubmit = document.getElementById('addWalletSubmit');
+const paymentOptions = document.querySelectorAll('.wallet-payment-option');
+
+// Initialize
+function init(){
+  state.balance = 0;
+  updateBalance();
+  renderCategories();
+  attachEvents();
+}
+
+function updateBalance(){
+  balanceRight.textContent = state.balance.toFixed(2);
+}
+
+// Render categories
+function renderCategories(){
+  categoriesEl.innerHTML = '';
+  state.categories.forEach(cat => {
+    const tab = document.createElement('div');
+    tab.className = 'category-tab';
+    tab.id = 'cat-'+cat.id;
+    tab.innerHTML = `
+      <img src="${cat.icon}" class="category-icon" alt="${cat.name_en}">
+      ${state.lang === 'bn' ? cat.name_bn : cat.name_en}
+    `;
+    tab.onclick = () => setActiveCategory(cat.id);
+    categoriesEl.appendChild(tab);
+  });
+  
+  // Activate first category by default
+  if (state.categories.length > 0 && !state.activeCat) {
+    setActiveCategory(state.categories[0].id);
+  }
+}
+
+// Set active category
+function setActiveCategory(catId){
+  state.activeCat = catId;
+  
+  // Update UI
+  document.querySelectorAll('.category-tab').forEach(el => {
+    el.classList.remove('active');
+  });
+  document.getElementById('cat-'+catId).classList.add('active');
+  
+  // Render products
+  renderProducts(catId);
+}
+
+// Render products
+function renderProducts(catId){
+  productsContainer.innerHTML = '';
+  productsContainer.className = 'products-container active';
+  
+  const products = state.products[catId] || [];
+  const grid = document.createElement('div');
+  grid.className = 'products-grid';
+  
+  products.forEach((product, idx) => {
+    const price = parsePrice(product);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h3>${product.split('|')[0].trim()}</h3>
+      <div class="muted">${product.split('|')[1].trim()}</div>
+      <div class="price">৳ ${price.toFixed(2)}</div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn buy-now" data-cat="${catId}" data-idx="${idx}">BUY NOW</button>
+        <button class="btn add-cart" data-cat="${catId}" data-idx="${idx}" style="background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.04)">Add to Cart</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  
+  productsContainer.appendChild(grid);
+  
+  // Attach event listeners
+  document.querySelectorAll('.buy-now').forEach(btn => {
+    btn.onclick = (e) => {
+      const cat = e.target.getAttribute('data-cat');
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      openProductModal(cat, idx, true);
+    };
+  });
+  
+  document.querySelectorAll('.add-cart').forEach(btn => {
+    btn.onclick = (e) => {
+      const cat = e.target.getAttribute('data-add') || e.target.getAttribute('data-cat');
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      addToCart(cat, idx);
+    };
+  });
+}
+
+// Product Modal
+function openProductModal(cat, idx, immediateBuy = false) {
+  const product = state.products[cat][idx];
+  modalTitle.textContent = product.split('|')[0].trim();
+  modalBody.innerHTML = `
+    <div style="margin-bottom:8px"><strong>${product}</strong></div>
+    <div class="muted small">Enter Player ID / প্লেয়ার আইডি লিখুন (UID)</div>
+  `;
+  playerIdInput.value = '';
+  productModal.style.display = 'flex';
+  
+  modalAdd.onclick = () => {
+    addToCart(ca
